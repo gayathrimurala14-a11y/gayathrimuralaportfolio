@@ -17,7 +17,7 @@ export const siteConfig = {
   phone: "+91 8099532979",
 
   // LinkedIn Profile URL
-  linkedInUrl: "https://www.linkedin.com/in/gayathri-murala",
+  linkedInUrl: "https://www.linkedin.com/in/gayathri-murala-8883922b4/",
 
   // RESUME GOOGLE DRIVE LINK (Editable right here in VS Code!)
   // When visitors click "Resume" in the header or footer, they are redirected directly to this URL:
