@@ -55,7 +55,7 @@ export const projectsData: ProjectItem[] = [
     category: "Metro Infrastructure & Interior Works",
     description:
       "Comprehensive interior drafting, technical drawings, suspended baffle ceiling plans, and MEP coordination for Chennai Metro Rail Limited (CMRL).",
-    image: "/images/koyambedu metro face.png",
+    image: "/images/koyambedu metro.png",
     projectUrl: "",
   },
   

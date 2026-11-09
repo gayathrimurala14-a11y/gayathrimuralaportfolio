@@ -24,5 +24,5 @@ export const contactData: ContactData = {
   phone: "+91 8099532979",
   location: "Vijayawada, Andhra Pradesh, India",
   locationNote: "Vijayawada, India · Open to pan-India & global design projects",
-  linkedInUrl: "https://www.linkedin.com/in/gayathri-murala",
+  linkedInUrl: "https://www.linkedin.com/in/gayathri-murala-8883922b4/",
 };

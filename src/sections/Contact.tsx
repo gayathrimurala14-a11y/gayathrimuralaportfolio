@@ -22,6 +22,7 @@ export const Contact: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState('');
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -41,17 +42,47 @@ export const Contact: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSubmissionError('');
+
+    try {
+      const response = await fetch(
+        `https://formsubmit.co/ajax/${encodeURIComponent(contactData.email)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            _subject: formData.subject,
+          }),
+        },
+      );
+      const result: { success?: boolean | string; message?: string } =
+        await response.json();
+
+      if (!response.ok || (result.success !== true && result.success !== 'true')) {
+        throw new Error(result.message || 'Unable to send your message right now.');
+      }
+
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
       setErrors({});
-    }, 600);
+    } catch (error) {
+      setSubmissionError(
+        error instanceof Error
+          ? error.message
+          : 'Unable to send your message right now. Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -184,6 +215,8 @@ export const Contact: React.FC = () => {
               </h3>
               <p className="text-xs text-[#777777] mb-8">
                 Fill out the details below and I will get back to you promptly.
+                Messages are delivered to {contactData.email} via FormSubmit.
+                Confirm FormSubmit&apos;s one-time activation email to enable delivery.
               </p>
 
               {isSubmitted ? (
@@ -206,6 +239,11 @@ export const Contact: React.FC = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  {submissionError && (
+                    <p role="alert" className="text-sm text-red-600">
+                      {submissionError}
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-wider text-[#555555] mb-1.5">
@@ -217,7 +255,7 @@ export const Contact: React.FC = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
-                        placeholder="e.g. Ramesh Kumar"
+                        placeholder="e.g. your name"
                         className={`w-full px-4 py-2.5 text-sm bg-[#FAFAF8] border rounded-lg focus:outline-none transition-colors ${
                           errors.name
                             ? 'border-red-500 focus:border-red-500'
@@ -262,7 +300,7 @@ export const Contact: React.FC = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, subject: e.target.value })
                       }
-                      placeholder="e.g. Structural Drafting Opportunity / Project Consultation"
+                      placeholder="e.g. Opportunity / Project Consultation"
                       className={`w-full px-4 py-2.5 text-sm bg-[#FAFAF8] border rounded-lg focus:outline-none transition-colors ${
                         errors.subject
                           ? 'border-red-500 focus:border-red-500'
